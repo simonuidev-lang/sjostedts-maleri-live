@@ -73,45 +73,81 @@ interface ProjectCardData {
   size: "wide" | "half";
   /** Number of columns for the thumbnail grid inside the card */
   thumbCols: 2 | 1;
+  /**
+   * When set, the card renders as a single full-bleed image showcase
+   * instead of a grid. No carousel or before/after logic is applied.
+   */
+  singleImage?: { src: string; alt: string };
 }
 
 const projectCards: ProjectCardData[] = [
+  // ── Card 1: Exteriör: Inglasad Altan (4 images, full width) ──
   {
-    id: "projekt-a",
-    title: "Villainteriör · Djursholm",
-    subtitle: "Komplett interiör inklusive tak, väggar och snickerier — resultatet talar för sig självt.",
-    tag: "INTERIÖR · 4 BILDER",
+    id: "projekt-altan",
+    title: "Exteriör: Inglasad Altan",
+    subtitle: "Komplett ytbehandling av den svarta träexteriören — från grundning till finish med precision i varje detalj.",
+    tag: "EXTERIÖR · GALLERI",
     size: "wide",
     thumbCols: 2,
     images: [
-      { src: "/1.png", label: "Före · Vardagsrum" },
-      { src: "/2.png", label: "Efter · Vardagsrum" },
-      { src: "/3.png", label: "Före · Kök" },
-      { src: "/4.png", label: "Efter · Kök" },
+      { src: "/1-altan/1.jpg", label: "Före: Vägg" },
+      { src: "/1-altan/2.jpg", label: "Exteriör mörk" },
+      { src: "/1-altan/3.jpg", label: "Interiör" },
+      { src: "/1-altan/4.jpg", label: "Exteriör översikt" },
     ],
   },
+  // ── Card 2: Fasadmålning: Detalj & Helhet (4 images, full width) ──
   {
-    id: "projekt-b",
-    title: "Fasad · Ljungby",
-    subtitle: "Klimatskyddad fasadmålning med premier­produkt i nordisk natur.",
+    id: "projekt-fasad",
+    title: "Fasadmålning: Detalj & Helhet",
+    subtitle: "Klimatskyddad fasadmålning — flagnade ytor restaurerade och förseglade med premiumprodukter för generationer framöver.",
+    tag: "FASAD · GALLERI",
+    size: "wide",
+    thumbCols: 2,
+    images: [
+      { src: "/2-fasad-detaljer/1.jpg", label: "Detalj" },
+      { src: "/2-fasad-detaljer/2.jpg", label: "Detalj" },
+      { src: "/2-fasad-detaljer/3.jpg", label: "Detalj" },
+      { src: "/2-fasad-detaljer/4.jpg", label: "Detalj" },
+    ],
+  },
+  // ── Card 3: Exteriör: Plattvätt (2 images, Before/After) ──
+  {
+    id: "projekt-plattvatt",
+    title: "Exteriör: Plattvätt",
+    subtitle: "Professionell högtrycksrengöring — stenplattor återfår sin ursprungliga yta och lyser som nya.",
+    tag: "EXTERIÖR · FÖRE / EFTER",
+    size: "half",
+    thumbCols: 1,
+    images: [
+      { src: "/3-plattvatt/1.jpg", label: "Före" },
+      { src: "/3-plattvatt/2.jpg", label: "Efter" },
+    ],
+  },
+  // ── Card 4: Interiör: Trapprenovering (2 images, Before/After) ──
+  {
+    id: "projekt-trappa",
+    title: "Interiör: Trapprenovering",
+    subtitle: "Totalrenovering av trappa — slipning, grundning och lackering till absolut planhet och exklusiv finish.",
+    tag: "INTERIÖR · FÖRE / EFTER",
+    size: "half",
+    thumbCols: 1,
+    images: [
+      { src: "/4-trappa/1.jpg", label: "Före" },
+      { src: "/4-trappa/2.jpg", label: "Efter" },
+    ],
+  },
+  // ── Card 5: Fasadmålning: Röd Trävilla (2 images, Before/After) ──
+  {
+    id: "projekt-rod-villa",
+    title: "Fasadmålning: Röd Trävilla",
+    subtitle: "Traditionell rödfärgsmålning med moderna premiumprodukter — skyddar och förvandlar hela fasaden.",
     tag: "FASAD · FÖRE / EFTER",
     size: "half",
     thumbCols: 1,
     images: [
-      { src: "/1.png", label: "Före" },
-      { src: "/2.png", label: "Efter" },
-    ],
-  },
-  {
-    id: "projekt-c",
-    title: "BRF · Göteborg",
-    subtitle: "Renovering av trapphus och gemensamma utrymmen — levererat i tid.",
-    tag: "KOMMERSIELLT · FÖRE / EFTER",
-    size: "half",
-    thumbCols: 1,
-    images: [
-      { src: "/3.png", label: "Före" },
-      { src: "/4.png", label: "Efter" },
+      { src: "/5-fasad-helhet/1.jpg", label: "Före" },
+      { src: "/5-fasad-helhet/2.jpg", label: "Efter" },
     ],
   },
 ];
@@ -157,6 +193,77 @@ function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: numbe
   };
 
   const thumbGridClass = card.thumbCols === 2 ? "grid-cols-2" : "grid-cols-1";
+
+  /* ── Single-image showcase variant (no grid, no carousel) ── */
+  if (card.singleImage) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={VP}
+        layoutId={`card-container-${card.id}`}
+        transition={SPRING}
+        className="relative flex flex-col select-none"
+        style={{
+          borderRadius: "1.75rem",
+          overflow: "hidden",
+          border: "1px solid rgba(0,0,0,0.07)",
+          background: "rgba(255,255,255,0.72)",
+          boxShadow: "0 20px 60px -15px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+        }}
+      >
+        {/* Full-bleed image */}
+        <motion.div
+          layoutId={`thumb-${card.id}-0`}
+          transition={SPRING}
+          className="relative overflow-hidden"
+          style={{
+            borderRadius: "1.4rem 1.4rem 0 0",
+            aspectRatio: "16 / 9",
+            background: CREAM,
+          }}
+        >
+          <img
+            src={card.singleImage.src}
+            alt={card.singleImage.alt}
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
+          <GridTexture />
+          {/* Signature chip */}
+          <div className="absolute top-3 right-3">
+            <span
+              className="text-[8px] tracking-[0.26em] font-mono font-semibold uppercase px-2.5 py-1 rounded-full"
+              style={{ background: "rgba(0,0,0,0.55)", color: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}
+            >
+              Signatur
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Card footer */}
+        <div className="px-5 pb-5 pt-4 flex flex-col gap-1.5">
+          <span
+            className="text-[9px] tracking-[0.3em] font-mono font-semibold uppercase"
+            style={{ color: "rgba(0,0,0,0.36)" }}
+          >
+            {card.tag}
+          </span>
+          <h3
+            className="font-serif font-bold leading-tight"
+            style={{ fontSize: "clamp(1.15rem, 1.8vw, 1.5rem)" }}
+          >
+            {card.title}
+          </h3>
+          <p className="text-xs font-sans font-normal leading-relaxed" style={{ color: "rgba(0,0,0,0.52)" }}>
+            {card.subtitle}
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <>
@@ -206,17 +313,19 @@ function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: numbe
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
               />
               <GridTexture />
-              {/* Before/After chip for 2-image cards */}
-              {card.thumbCols === 1 && (
-                <div className="absolute top-3 left-3">
-                  <span
-                    className="text-[8px] tracking-[0.26em] font-mono font-semibold uppercase px-2.5 py-1 rounded-full"
-                    style={{ background: idx === 0 ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.88)", color: idx === 0 ? "rgba(255,255,255,0.88)" : "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)" }}
-                  >
-                    {img.label}
-                  </span>
-                </div>
-              )}
+              {/* Before/After chip — shown on all grid cards */}
+              <div className="absolute top-3 left-3">
+                <span
+                  className="text-[8px] tracking-[0.26em] font-mono font-semibold uppercase px-2.5 py-1 rounded-full"
+                  style={{
+                    background: img.label === "Före" ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.88)",
+                    color: img.label === "Före" ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.6)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                >
+                  {img.label}
+                </span>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -494,7 +603,12 @@ function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: numbe
 
 /* ══════════════════════════════════════════════════════════════════════════════
    BENTO GALLERY SECTION
-   Asymmetric CSS Grid: Card 1 spans full width (2 cols), Cards 2 & 3 each take 1 col.
+   Layout:
+     Row 1 – Card 0 (Altan, 4-img):          full width  (col-span-2)
+     Row 2 – Card 1 (Fasad, 4-img):          full width  (col-span-2)
+     Row 3 – Card 2 (Plattvätt, 2-img):      left half   (col-span-1)
+           – Card 3 (Trappa, 2-img):         right half  (col-span-1)
+     Row 4 – Card 4 (Röd Trävilla, 2-img):   full width  (col-span-2)
 ═══════════════════════════════════════════════════════════════════════════════ */
 function BentoGallerySection() {
   return (
@@ -521,20 +635,29 @@ function BentoGallerySection() {
         </p>
       </motion.div>
 
-      {/*
-        Bento grid:
-          – 2-column on md+
-          – Card 0 (wide): col-span-2
-          – Card 1 & 2: col-span-1 each
-      */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Card 0 — full width */}
+        {/* ── Row 1: Card 0 — Exteriör: Inglasad Altan, full width showstopper ── */}
         <div className="md:col-span-2">
           <ProjectCard card={projectCards[0]} delay={0} />
         </div>
-        {/* Cards 1 & 2 — side by side */}
-        <ProjectCard card={projectCards[1]} delay={0.08} />
-        <ProjectCard card={projectCards[2]} delay={0.16} />
+
+        {/* ── Row 2: Card 1 — Fasadmålning: Detalj & Helhet, full width showstopper ── */}
+        <div className="md:col-span-2">
+          <ProjectCard card={projectCards[1]} delay={0.06} />
+        </div>
+
+        {/* ── Row 3: Cards 2 & 3 — Plattvätt & Trapprenovering side-by-side ── */}
+        <div className="md:col-span-1">
+          <ProjectCard card={projectCards[2]} delay={0.12} />
+        </div>
+        <div className="md:col-span-1">
+          <ProjectCard card={projectCards[3]} delay={0.18} />
+        </div>
+
+        {/* ── Row 4: Card 4 — Fasadmålning: Röd Trävilla, half width Before/After ── */}
+        <div className="md:col-span-1">
+          <ProjectCard card={projectCards[4]} delay={0.24} />
+        </div>
       </div>
     </section>
   );
