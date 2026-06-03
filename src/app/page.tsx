@@ -131,7 +131,15 @@ const GridTexture = ({ size = 28 }: { size?: number }) => (
    REUSABLE PROJECT CARD COMPONENT
    – Each card manages its own open/active state independently.
 ═══════════════════════════════════════════════════════════════════════════════ */
-function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: number }) {
+function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; delay?: number; index?: number }) {
+  /* Direction-based initial state: left | right | top */
+  const cardInitial =
+    index % 3 === 0
+      ? { x: -50, y: 0, opacity: 0 }
+      : index % 3 === 1
+      ? { x: 50, y: 0, opacity: 0 }
+      : { x: 0, y: -50, opacity: 0 };
+  const cardAnimate = { x: 0, y: 0, opacity: 1 };
   const [isOpen, setIsOpen] = useState(false);
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
@@ -154,11 +162,11 @@ function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: numbe
   if (card.singleImage) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={cardInitial}
+        whileInView={cardAnimate}
         viewport={VP}
         layoutId={`card-container-${card.id}`}
-        transition={SPRING}
+        transition={{ ...SPRING, delay }}
         className="relative flex flex-col select-none"
         style={{
           borderRadius: "1.75rem",
@@ -225,12 +233,12 @@ function ProjectCard({ card, delay = 0 }: { card: ProjectCardData; delay?: numbe
     <>
       {/* ── The card widget ── */}
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={cardInitial}
+        whileInView={cardAnimate}
         viewport={VP}
         layoutId={`card-container-${card.id}`}
         onClick={openCard}
-        transition={SPRING}
+        transition={{ ...SPRING, delay }}
         className="relative flex flex-col cursor-pointer select-none group"
         style={{
           borderRadius: "1.75rem",
@@ -593,26 +601,31 @@ function BentoGallerySection() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* ── Row 1: Card 0 — Exteriör: Inglasad Altan, full width showstopper ── */}
+        {/* index 0 → slides in from left */}
         <div className="md:col-span-2">
-          <ProjectCard card={projectCards[0]} delay={0} />
+          <ProjectCard card={projectCards[0]} delay={0} index={0} />
         </div>
 
         {/* ── Row 2: Card 1 — Fasadmålning: Detalj & Helhet, full width showstopper ── */}
+        {/* index 1 → slides in from right */}
         <div className="md:col-span-2">
-          <ProjectCard card={projectCards[1]} delay={0.06} />
+          <ProjectCard card={projectCards[1]} delay={0.06} index={1} />
         </div>
 
         {/* ── Row 3: Cards 2 & 3 — Plattvätt & Trapprenovering side-by-side ── */}
+        {/* index 2 → slides in from top */}
         <div className="md:col-span-1">
-          <ProjectCard card={projectCards[2]} delay={0.12} />
+          <ProjectCard card={projectCards[2]} delay={0.12} index={2} />
         </div>
+        {/* index 3 → slides in from left (3 % 3 === 0) */}
         <div className="md:col-span-1">
-          <ProjectCard card={projectCards[3]} delay={0.18} />
+          <ProjectCard card={projectCards[3]} delay={0.18} index={3} />
         </div>
 
         {/* ── Row 4: Card 4 — Fasadmålning: Röd Trävilla, half width Before/After ── */}
+        {/* index 4 → slides in from right (4 % 3 === 1) */}
         <div className="md:col-span-1">
-          <ProjectCard card={projectCards[4]} delay={0.24} />
+          <ProjectCard card={projectCards[4]} delay={0.24} index={4} />
         </div>
       </div>
     </section>
@@ -654,17 +667,17 @@ export default function Home() {
           <img
             src="/logga.png"
             alt="Sjöstedts Måleri"
-            className="h-12 md:h-20 w-auto object-contain select-none flex-shrink-0"
+            className="h-9 sm:h-12 md:h-20 w-auto object-contain select-none shrink"
           />
 
           {/* CTA pill + phone — both visible on mobile, compact */}
-          <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1 md:gap-4 shrink-0">
             {/* Phone — Concave neumorphic button */}
             <a
               href="tel:0735271957"
               id="nav-phone-btn"
               aria-label="Ring 073-527 19 57"
-              className="flex items-center gap-1.5 rounded-full px-2 py-1 md:px-5 md:py-2.5 text-xs font-semibold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none"
+              className="flex items-center gap-1 md:gap-1.5 rounded-full px-2 py-1 md:px-5 md:py-2.5 text-[10px] md:text-xs font-semibold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none"
               style={{
                 letterSpacing: "0.12em",
                 boxShadow: "inset 0 2px 6px rgba(0,0,0,0.10), inset 0 1px 2px rgba(0,0,0,0.06)",
@@ -693,7 +706,7 @@ export default function Home() {
               transition={{ duration: 1, ease, delay: 0.3 }}
               whileHover={{ scale: 1.06, boxShadow: "0 20px 48px rgba(0,0,0,0.36), 0 4px 12px rgba(0,0,0,0.22)" }}
               whileTap={{ scale: 0.96 }}
-              className="rounded-full bg-black text-white py-1 px-3 md:px-7 md:py-3 text-xs font-semibold uppercase cursor-pointer select-none transition-all duration-300 flex-shrink-0"
+              className="rounded-full bg-black text-white py-1 px-2.5 md:px-7 md:py-3 text-[10px] md:text-xs font-semibold uppercase cursor-pointer select-none transition-all duration-300 flex-shrink-0"
               style={{
                 letterSpacing: "0.18em",
                 boxShadow: "0 8px 28px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12)",
@@ -729,7 +742,7 @@ export default function Home() {
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-6 md:pt-8 md:pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full pt-2 pb-4 md:pt-8 md:pb-10">
             {/* LEFT — Grounded Headline */}
             <motion.div
               initial={{ opacity: 0, x: -100 }}
@@ -741,16 +754,15 @@ export default function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease, delay: 0.1 }}
-                className="font-serif font-bold leading-none tracking-tight mb-5"
-                style={{ fontSize: "clamp(2.6rem, 5.5vw, 6.5rem)" }}
+                className="font-serif font-bold leading-none tracking-tight mb-3 md:mb-5 text-4xl md:text-6xl lg:text-[clamp(2.6rem,5.5vw,6.5rem)]"
               >
                 Professionellt
                 <br />
                 <span style={{ opacity: 0.82 }}>måleri i</span>
                 <br />
                 <span
-                  className="font-serif font-bold"
-                  style={{ fontSize: "clamp(1.9rem, 4.2vw, 4.2rem)", opacity: 0.48 }}
+                  className="font-serif font-bold text-2xl md:text-[clamp(1.9rem,4.2vw,4.2rem)]"
+                  style={{ opacity: 0.48 }}
                 >
                   Ljungby.
                 </span>
@@ -763,12 +775,12 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, ease, delay: 0.4 }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-row flex-wrap items-center gap-2 md:gap-3"
               >
                 {/* BOKA OFFERT — convex, pops OUT */}
                 <a
                   href="#offert"
-                  className="rounded-full bg-black text-white px-9 py-4 text-sm font-bold uppercase transition-all duration-300 hover:-translate-y-1 active:scale-95"
+                  className="rounded-full bg-black text-white px-4 py-2 text-sm md:text-sm md:px-9 md:py-4 font-bold uppercase transition-all duration-300 hover:-translate-y-1 active:scale-95"
                   style={{
                     letterSpacing: "0.16em",
                     boxShadow: "0 12px 32px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.1) inset",
@@ -791,7 +803,7 @@ export default function Home() {
                   href="tel:0735271957"
                   id="hero-phone-btn"
                   aria-label="Ring 073-527 19 57"
-                  className="rounded-full px-9 py-4 text-sm font-bold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none active:scale-95"
+                  className="rounded-full px-4 py-2 text-sm md:text-sm md:px-9 md:py-4 font-bold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none active:scale-95"
                   style={{
                     letterSpacing: "0.16em",
                     boxShadow: "inset 0 2px 8px rgba(0,0,0,0.10), inset 0 1px 3px rgba(0,0,0,0.07)",
@@ -814,7 +826,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease, delay: 0.65 }}
-                className="flex flex-wrap items-center gap-4 mt-8"
+                className="flex flex-wrap items-center gap-3 mt-4 md:mt-8"
               >
                 {/* 5-star row */}
                 <span className="text-xs text-stone-500 flex items-center gap-1.5">
@@ -857,8 +869,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.5, ease, delay: 0.1 }}
-              className="relative w-full min-w-0"
-              style={{ aspectRatio: "4/5" }}
+              className="relative w-full min-w-0 aspect-[4/5] md:aspect-auto md:h-full md:min-h-[600px]"
             >
               <div
                 className="absolute inset-0 rounded-[3rem] overflow-hidden"
@@ -871,7 +882,7 @@ export default function Home() {
                 <img
                   src="/jonas.jpg"
                   alt="Jonas Sjöstedt Måleri"
-                  className="object-cover w-full h-full rounded-[2rem] shadow-xl"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </motion.div>
