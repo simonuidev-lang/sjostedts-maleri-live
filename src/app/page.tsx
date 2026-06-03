@@ -664,11 +664,21 @@ export default function Home() {
           className="max-w-screen-xl mx-auto px-3 md:px-16 h-16 md:h-20 flex items-center justify-between gap-2"
         >
           {/* Logo */}
-          <img
-            src="/logga.png"
-            alt="Sjöstedts Måleri"
-            className="h-9 sm:h-12 md:h-20 w-auto object-contain select-none shrink"
-          />
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}
+            className="cursor-pointer shrink flex items-center outline-none"
+            aria-label="Tillbaka till toppen"
+          >
+            <img
+              src="/logga.png"
+              alt="Sjöstedts Måleri"
+              className="h-9 sm:h-12 md:h-20 w-auto object-contain select-none shrink"
+            />
+          </a>
 
           {/* CTA pill + phone — both visible on mobile, compact */}
           <div className="flex items-center gap-1 md:gap-4 shrink-0">
