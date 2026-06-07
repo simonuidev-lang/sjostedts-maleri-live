@@ -900,9 +900,34 @@ function HamburgerMenu() {
 ═══════════════════════════════════════════════════════════════════════════════ */
 function ContactForm() {
   const [fields, setFields] = useState({ name: "", email: "", phone: "", adress: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("submitting");
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(fields),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setFields({ name: "", email: "", phone: "", adress: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -910,10 +935,45 @@ function ContactForm() {
     fontFamily: "var(--font-inter, sans-serif)",
   };
 
+  if (status === "success") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center text-center py-12 px-6 rounded-3xl"
+        style={{
+          background: "rgba(255, 255, 255, 0.04)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.3)"
+        }}
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+          className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-6"
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </motion.div>
+        <h3 className="font-serif font-bold text-2xl text-white mb-3">Tack för din förfrågan!</h3>
+        <p className="text-white/70 text-base max-w-sm leading-relaxed mb-6">
+          Vi har tagit emot dina uppgifter och återkommer till dig inom 24 timmar.
+        </p>
+        <button
+          onClick={() => setStatus("idle")}
+          className="rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 transition-all duration-200"
+        >
+          Skicka en till förfrågan
+        </button>
+      </motion.div>
+    );
+  }
+
   return (
     <form
-      action="https://formsubmit.co/sjostedtsmaleri@gmail.com"
-      method="POST"
+      onSubmit={handleSubmit}
       className="flex flex-col gap-10"
     >
       {[
@@ -937,7 +997,8 @@ function ContactForm() {
             onChange={handleChange}
             placeholder={field.placeholder}
             required={field.name !== "adress"}
-            className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors peer"
+            disabled={status === "submitting"}
+            className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors peer disabled:opacity-50"
             style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
             onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
@@ -960,7 +1021,8 @@ function ContactForm() {
           onChange={handleChange}
           placeholder="Skriv en kort beskrivning av vad du vill ha hjälp med..."
           rows={3}
-          className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors resize-none"
+          disabled={status === "submitting"}
+          className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors resize-none disabled:opacity-50"
           style={inputStyle}
           onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
           onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
@@ -972,16 +1034,25 @@ function ContactForm() {
         <motion.button
           type="submit"
           id="form-submit"
-          whileHover={{ scale: 1.03, y: -2 }}
-          whileTap={{ scale: 0.97 }}
-          className="w-full rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] py-6 transition-all duration-300"
+          disabled={status === "submitting"}
+          whileHover={status === "submitting" ? {} : { scale: 1.03, y: -2 }}
+          whileTap={status === "submitting" ? {} : { scale: 0.97 }}
+          className={`w-full rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] py-6 transition-all duration-300 ${status === "submitting" ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           style={{
             boxShadow: "0 20px 60px -10px rgba(255,255,255,0.25), 0 0 0 1px rgba(255,255,255,0.08)",
-            cursor: "pointer",
           }}
         >
-          BOKA OFFERT / FÖRFRÅGAN
+          {status === "submitting" ? "SKICKAR..." : "BOKA OFFERT / FÖRFRÅGAN"}
         </motion.button>
+        {status === "error" && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-red-400 text-sm font-semibold text-center mt-2"
+          >
+            Något gick fel när förfrågan skickades. Vänligen ring oss direkt eller försök igen.
+          </motion.p>
+        )}
         <p
           className="text-center text-xs tracking-wide"
           style={{ color: "rgba(255,255,255,0.3)" }}
