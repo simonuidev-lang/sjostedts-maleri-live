@@ -900,26 +900,9 @@ function HamburgerMenu() {
 ═══════════════════════════════════════════════════════════════════════════════ */
 function ContactForm() {
   const [fields, setFields] = useState({ name: "", email: "", phone: "", adress: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
-      });
-      const data = await res.json();
-      setStatus(data.ok ? "success" : "error");
-    } catch {
-      setStatus("error");
-    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -927,43 +910,25 @@ function ContactForm() {
     fontFamily: "var(--font-inter, sans-serif)",
   };
 
-  if (status === "success") {
-    return (
-      <div className="flex flex-col items-start gap-6 py-10">
-        <div
-          className="w-16 h-16 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(255,255,255,0.10)" }}
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-        <div>
-          <p className="font-serif font-bold text-white text-3xl leading-none mb-3">Tack!</p>
-          <p className="text-lg" style={{ color: "rgba(255,255,255,0.6)" }}>
-            Vi återkopplar inom 24 timmar.
-          </p>
-        </div>
-        <button
-          onClick={() => { setStatus("idle"); setFields({ name: "", email: "", phone: "", adress: "", message: "" }); }}
-          className="text-sm font-semibold uppercase tracking-widest transition-opacity duration-200 hover:opacity-60"
-          style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.14em" }}
-        >
-          Skicka ny förfrågan
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+    <form
+      action="https://formsubmit.co/sjostedtsmaleri@gmail.com"
+      method="POST"
+      className="flex flex-col gap-10"
+    >
       {[
-        { type: "text", name: "name", placeholder: "Ditt Namn", id: "form-name" },
-        { type: "email", name: "email", placeholder: "E-postadress", id: "form-email" },
-        { type: "tel", name: "phone", placeholder: "Telefonnummer", id: "form-phone" },
-        { type: "text", name: "adress", placeholder: "Adress", id: "form-adress" },
+        { type: "text", name: "name", label: "Ditt namn", placeholder: "Skriv ditt fullständiga namn...", id: "form-name" },
+        { type: "email", name: "email", label: "E-postadress", placeholder: "Skriv din e-postadress...", id: "form-email" },
+        { type: "tel", name: "phone", label: "Telefonnummer", placeholder: "Skriv ditt telefonnummer...", id: "form-phone" },
+        { type: "text", name: "adress", label: "Adress", placeholder: "Skriv din gatuadress (valfritt)...", id: "form-adress" },
       ].map((field) => (
-        <div key={field.id} className="relative group">
+        <div key={field.id} className="relative group flex flex-col">
+          <label
+            htmlFor={field.id}
+            className="text-white text-lg font-semibold tracking-wide mb-2 block"
+          >
+            {field.label}
+          </label>
           <input
             id={field.id}
             type={field.type}
@@ -972,7 +937,7 @@ function ContactForm() {
             onChange={handleChange}
             placeholder={field.placeholder}
             required={field.name !== "adress"}
-            className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors peer"
+            className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors peer"
             style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
             onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
@@ -981,44 +946,41 @@ function ContactForm() {
       ))}
 
       {/* Textarea */}
-      <div className="relative">
+      <div className="relative flex flex-col">
+        <label
+          htmlFor="form-project"
+          className="text-white text-lg font-semibold tracking-wide mb-2 block"
+        >
+          Berätta om ditt projekt
+        </label>
         <textarea
           id="form-project"
           name="message"
           value={fields.message}
           onChange={handleChange}
-          placeholder="Berätta om ditt projekt..."
+          placeholder="Skriv en kort beskrivning av vad du vill ha hjälp med..."
           rows={3}
-          className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors resize-none"
+          className="w-full bg-transparent pb-4 pt-1 text-white text-lg font-normal tracking-wide placeholder-white/20 focus:outline-none transition-colors resize-none"
           style={inputStyle}
           onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
           onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
         />
       </div>
 
-      {/* Error message */}
-      {status === "error" && (
-        <p className="text-sm" style={{ color: "rgba(255,120,120,0.9)" }}>
-          Något gick fel. Försök igen eller ring oss på 073-527 19 57.
-        </p>
-      )}
-
       {/* Submit CTA */}
       <div className="flex flex-col gap-5 mt-4">
         <motion.button
           type="submit"
           id="form-submit"
-          disabled={status === "sending"}
-          whileHover={status !== "sending" ? { scale: 1.03, y: -2 } : {}}
-          whileTap={status !== "sending" ? { scale: 0.97 } : {}}
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.97 }}
           className="w-full rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] py-6 transition-all duration-300"
           style={{
             boxShadow: "0 20px 60px -10px rgba(255,255,255,0.25), 0 0 0 1px rgba(255,255,255,0.08)",
-            opacity: status === "sending" ? 0.6 : 1,
-            cursor: status === "sending" ? "not-allowed" : "pointer",
+            cursor: "pointer",
           }}
         >
-          {status === "sending" ? "SKICKAR..." : "BOKA OFFERT / FÖRFRÅGAN"}
+          BOKA OFFERT / FÖRFRÅGAN
         </motion.button>
         <p
           className="text-center text-xs tracking-wide"
