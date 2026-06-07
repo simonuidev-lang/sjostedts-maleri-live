@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend("re_ED4fthF1_KwRB5rKViAMwYwvDyqpbQhGN");
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -97,21 +100,11 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`;
 
-    /* ── Nodemailer transport ── */
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER || process.env.EMAIL_USER,
-        pass: process.env.SMTP_PASS || process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
+    /* ── Send email using Resend client directly ── */
+    await resend.emails.send({
       from: "Sjöstedts Måleri <onboarding@resend.dev>",
       to: "krigaren109@gmail.com",
-      replyTo: email,
+      replyTo: email || undefined,
       subject: `🎨 Ny offertförfrågan från ${name || "okänd"} — ${timestamp}`,
       html,
     });
