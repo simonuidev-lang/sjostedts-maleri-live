@@ -1,19 +1,35 @@
 "use client";
 
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+
+/* --- Inline Social SVG Icons ------------------------------------------------- */
+const FacebookIcon = ({ size = 18, style }: { size?: number; style?: React.CSSProperties }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" style={style} aria-hidden="true">
+    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+  </svg>
+);
+
+const InstagramIcon = ({ size = 18, style }: { size?: number; style?: React.CSSProperties }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={style} aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+  </svg>
+);
 
 
-/* ─── Brand Tokens ─────────────────────────────────────────────────────────── */
+/* --- Brand Tokens ----------------------------------------------------------- */
 const CREAM = "#F4F0EA";
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-/* ─── Reusable viewport props ───────────────────────────────────────────────── */
+/* --- Reusable viewport props ------------------------------------------------- */
 const VP = { once: true, margin: "-100px" } as const;
 
 
 
-/* ─── Project card data ─────────────────────────────────────────────────────── */
+/* --- Project card data ------------------------------------------------------- */
 interface ProjectImage {
   src: string;
   label: string;
@@ -37,7 +53,7 @@ interface ProjectCardData {
 }
 
 const projectCards: ProjectCardData[] = [
-  // ── Card 1: Exteriör: Inglasad Altan (4 images, full width) ──
+  // -- Card 1: Exteriör: Inglasad Altan (4 images, full width) --
   {
     id: "projekt-altan",
     title: "Exteriör: Inglasad Altan",
@@ -52,7 +68,7 @@ const projectCards: ProjectCardData[] = [
       { src: "/1-altan/4.jpg", label: "Efter" },
     ],
   },
-  // ── Card 2: Fasadmålning: Detalj & Helhet (4 images, full width) ──
+  // -- Card 2: Fasadmålning: Detalj & Helhet (4 images, full width) --
   {
     id: "projekt-fasad",
     title: "Fasadmålning: Detalj & Helhet",
@@ -67,7 +83,7 @@ const projectCards: ProjectCardData[] = [
       { src: "/2-fasad-detaljer/4.jpg", label: "Efter" },
     ],
   },
-  // ── Card 3: Exteriör: Plattvätt (2 images, Before/After) ──
+  // -- Card 3: Exteriör: Plattvätt (2 images, Before/After) --
   {
     id: "projekt-plattvatt",
     title: "Exteriör: Plattvätt",
@@ -80,7 +96,7 @@ const projectCards: ProjectCardData[] = [
       { src: "/3-plattvatt/2.jpg", label: "Efter" },
     ],
   },
-  // ── Card 4: Interiör: Trapprenovering (2 images, Before/After) ──
+  // -- Card 4: Interiör: Trapprenovering (2 images, Before/After) --
   {
     id: "projekt-trappa",
     title: "Interiör: Trapprenovering",
@@ -93,7 +109,7 @@ const projectCards: ProjectCardData[] = [
       { src: "/4-trappa/2.jpg", label: "Efter" },
     ],
   },
-  // ── Card 5: Fasadmålning: Röd Trävilla (2 images, Before/After) ──
+  // -- Card 5: Fasadmålning: Röd Trävilla (2 images, Before/After) --
   {
     id: "projekt-rod-villa",
     title: "Fasadmålning: Röd Trävilla",
@@ -108,24 +124,11 @@ const projectCards: ProjectCardData[] = [
   },
 ];
 
-/* ─── Easing curves ─────────────────────────────────────────────────────────── */
+/* --- Easing curves ----------------------------------------------------------- */
 const SPRING = { type: "spring", stiffness: 380, damping: 40 } as const;
 const SPRING_SLOW = { type: "spring", stiffness: 280, damping: 36 } as const;
 
-/* ── Grid texture helper ─────────────────────────────────────────────────────── */
-const GridTexture = ({ size = 28 }: { size?: number }) => (
-  <div
-    className="absolute inset-0 pointer-events-none"
-    style={{
-      backgroundImage: `
-        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)
-      `,
-      backgroundSize: `${size}px ${size}px`,
-    }}
-    aria-hidden="true"
-  />
-);
+
 
 /* ══════════════════════════════════════════════════════════════════════════════
    REUSABLE PROJECT CARD COMPONENT
@@ -158,7 +161,7 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
 
   const thumbGridClass = card.thumbCols === 2 ? "grid-cols-2" : "grid-cols-1";
 
-  /* ── Single-image showcase variant (no grid, no carousel) ── */
+  /* -- Single-image showcase variant (no grid, no carousel) -- */
   if (card.singleImage) {
     return (
       <motion.div
@@ -195,7 +198,7 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
             className="absolute inset-0 w-full h-full object-cover"
             onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           />
-          <GridTexture />
+
           {/* Signature chip */}
           <div className="absolute top-3 right-3">
             <span
@@ -231,7 +234,7 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
 
   return (
     <>
-      {/* ── The card widget ── */}
+      {/* -- The card widget -- */}
       <motion.div
         initial={cardInitial}
         whileInView={cardAnimate}
@@ -276,7 +279,6 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
               />
-              <GridTexture />
               {/* Before/After chip — shown on all grid cards */}
               <div className="absolute top-3 left-3">
                 <span
@@ -325,7 +327,7 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
         </div>
       </motion.div>
 
-      {/* ── Lightbox overlay ── */}
+      {/* -- Lightbox overlay -- */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -414,7 +416,6 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
                       className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                     />
-                    <GridTexture />
                     {/* Hover zoom overlay */}
                     <motion.div
                       initial={{ opacity: 0 }}
@@ -442,7 +443,7 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
               </motion.div>
             </motion.div>
 
-            {/* ── Full-screen single image viewer ── */}
+            {/* -- Full-screen single image viewer -- */}
             <AnimatePresence>
               {activeIdx !== null && (
                 <motion.div
@@ -476,7 +477,6 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
                           className="absolute inset-0 w-full h-full object-cover"
                           onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                         />
-                        <GridTexture size={32} />
                         <div
                           className="absolute top-5 left-5 px-4 py-2 rounded-full text-[10px] font-mono tracking-[0.28em] uppercase font-semibold"
                           style={{ background: "rgba(0,0,0,0.55)", color: "rgba(255,255,255,0.9)", backdropFilter: "blur(10px)" }}
@@ -566,15 +566,109 @@ function ProjectCard({ card, delay = 0, index = 0 }: { card: ProjectCardData; de
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
-   BENTO GALLERY SECTION
-   Layout:
-     Row 1 – Card 0 (Altan, 4-img):          full width  (col-span-2)
-     Row 2 – Card 1 (Fasad, 4-img):          full width  (col-span-2)
-     Row 3 – Card 2 (Plattvätt, 2-img):      left half   (col-span-1)
-           – Card 3 (Trappa, 2-img):         right half  (col-span-1)
-     Row 4 – Card 4 (Röd Trävilla, 2-img):   full width  (col-span-2)
+   CATEGORY GALLERY IMAGE PAIR — Two large before/after images side by side
 ═══════════════════════════════════════════════════════════════════════════════ */
-function BentoGallerySection() {
+function CategoryImagePair({
+  images,
+  categoryId,
+}: {
+  images: { src: string; label: string; placeholder?: string }[];
+  categoryId: string;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+      {images.map((img, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={VP}
+          transition={{ duration: 0.9, ease, delay: idx * 0.12 }}
+          className="relative overflow-hidden"
+          style={{
+            borderRadius: "1.75rem",
+            aspectRatio: "4 / 3",
+            background: CREAM,
+            border: "1px solid rgba(0,0,0,0.07)",
+            boxShadow: "0 20px 60px -15px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06)",
+          }}
+        >
+          {img.src ? (
+            <img
+              src={img.src}
+              alt={img.label}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+            />
+          ) : (
+            /* Placeholder when no real image */
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+              style={{ background: "rgba(0,0,0,0.04)" }}
+            >
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span className="text-xs font-mono tracking-widest uppercase" style={{ color: "rgba(0,0,0,0.25)" }}>
+                {img.placeholder || "Foto kommer"}
+              </span>
+            </div>
+          )}
+          {/* Label chip */}
+          <div className="absolute top-4 left-4">
+            <span
+              className="text-[8px] tracking-[0.26em] font-mono font-semibold uppercase px-3 py-1.5 rounded-full"
+              style={{
+                background: img.label === "Före" ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.88)",
+                color: img.label === "Före" ? "rgba(255,255,255,0.92)" : "rgba(0,0,0,0.6)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              {img.label}
+            </span>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   3-CATEGORY GALLERY SECTION
+═══════════════════════════════════════════════════════════════════════════════ */
+const galleryCategories = [
+  {
+    id: "invandig-maleri",
+    heading: "Invändigt Måleri",
+    href: "/galleri/invandigt",
+    images: [
+      { src: "/galleri/invandigt/1.jpg", label: "Före" },
+      { src: "/galleri/invandigt/2.jpg", label: "Efter" },
+    ],
+  },
+  {
+    id: "utvandig-maleri",
+    heading: "Utvändigt Måleri",
+    href: "/galleri/utvandigt",
+    images: [
+      { src: "/galleri/utvandigt/1.jpg", label: "Före" },
+      { src: "/galleri/utvandigt/2.jpg", label: "Efter" },
+    ],
+  },
+  {
+    id: "tvatt-algbehandlingar",
+    heading: "Tvätt / Algbehandlingar",
+    href: "/galleri/tvatt",
+    images: [
+      { src: "/galleri/tvatt/1.jpg", label: "Före" },
+      { src: "/galleri/tvatt/2.jpg", label: "Efter" },
+    ],
+  },
+];
+
+function CategoryGallerySection() {
   return (
     <section className="max-w-screen-xl mx-auto px-6 md:px-16 pt-16 pb-8 md:py-24">
       {/* Section header */}
@@ -594,41 +688,346 @@ function BentoGallerySection() {
         >
           Före / Efter.
         </h2>
-        <p className="mt-4 text-sm font-medium tracking-wide" style={{ color: "rgba(0,0,0,0.42)" }}>
-          Klicka på ett projekt för att utforska
-        </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* ── Row 1: Card 0 — Exteriör: Inglasad Altan, full width showstopper ── */}
-        {/* index 0 → slides in from left */}
-        <div className="md:col-span-2">
-          <ProjectCard card={projectCards[0]} delay={0} index={0} />
-        </div>
+      {/* Category blocks */}
+      <div className="flex flex-col gap-20 md:gap-28">
+        {galleryCategories.map((cat, catIdx) => (
+          <motion.div
+            key={cat.id}
+            id={cat.id}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.9, ease, delay: catIdx * 0.1 }}
+          >
+            {/* Category sub-heading — clickable link to sub-gallery */}
+            <div className="flex items-center gap-4 mb-8">
+              <span
+                className="text-[10px] tracking-[0.26em] font-mono font-semibold uppercase px-3 py-1.5 rounded-full flex-shrink-0"
+                style={{ background: "rgba(0,0,0,0.06)", color: "rgba(0,0,0,0.45)" }}
+              >
+                {String(catIdx + 1).padStart(2, "0")}
+              </span>
+              <Link href={cat.href} className="group/heading flex items-center gap-3 no-underline"
+                style={{ color: "inherit" }}
+              >
+                <h3
+                  className="font-serif font-bold leading-tight transition-opacity duration-200 group-hover/heading:opacity-70"
+                  style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+                >
+                  {cat.heading}
+                </h3>
+                {/* Arrow hint */}
+                <span
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 opacity-0 group-hover/heading:opacity-100 transition-all duration-200"
+                  style={{ background: "rgba(0,0,0,0.07)", transform: "translateX(0px)" }}
+                  aria-hidden="true"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </span>
+              </Link>
+            </div>
 
-        {/* ── Row 2: Card 1 — Fasadmålning: Detalj & Helhet, full width showstopper ── */}
-        {/* index 1 → slides in from right */}
-        <div className="md:col-span-2">
-          <ProjectCard card={projectCards[1]} delay={0.06} index={1} />
-        </div>
+            <Link href={cat.href} className="block no-underline group/imglink" style={{ color: "inherit" }}>
+              <CategoryImagePair images={cat.images} categoryId={cat.id} />
+            </Link>
 
-        {/* ── Row 3: Cards 2 & 3 — Plattvätt & Trapprenovering side-by-side ── */}
-        {/* index 2 → slides in from top */}
-        <div className="md:col-span-1">
-          <ProjectCard card={projectCards[2]} delay={0.12} index={2} />
-        </div>
-        {/* index 3 → slides in from left (3 % 3 === 0) */}
-        <div className="md:col-span-1">
-          <ProjectCard card={projectCards[3]} delay={0.18} index={3} />
-        </div>
+            {/* "Se alla foton" CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VP}
+              transition={{ duration: 0.7, ease, delay: 0.2 }}
+              className="mt-6"
+            >
+              <Link
+                href={cat.href}
+                className="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-200"
+                style={{
+                  color: "rgba(0,0,0,0.55)",
+                  letterSpacing: "0.06em",
+                  borderBottom: "1px solid rgba(0,0,0,0.18)",
+                  paddingBottom: "2px",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.9)";
+                  (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "rgba(0,0,0,0.7)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.55)";
+                  (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "rgba(0,0,0,0.18)";
+                }}
+              >
+                Se alla foton
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </Link>
+            </motion.div>
 
-        {/* ── Row 4: Card 4 — Fasadmålning: Röd Trävilla, half width Before/After ── */}
-        {/* index 4 → slides in from right (4 % 3 === 1) */}
-        <div className="md:col-span-1">
-          <ProjectCard card={projectCards[4]} delay={0.24} index={4} />
-        </div>
+          </motion.div>
+        ))}
       </div>
     </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   HAMBURGER MENU COMPONENT
+═══════════════════════════════════════════════════════════════════════════════ */
+const navLinks = [
+  { label: "Invändigt Måleri", href: "/galleri/invandigt" },
+  { label: "Utvändigt Måleri", href: "/galleri/utvandigt" },
+  { label: "Tvätt / Algbehandlingar", href: "/galleri/tvatt" },
+];
+
+function HamburgerMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  /* Close on outside click */
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [isOpen]);
+
+  /* Close on Escape */
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isOpen]);
+
+  return (
+    <div ref={menuRef} className="relative flex-shrink-0">
+      {/* Hamburger trigger button */}
+      <button
+        id="hamburger-menu-btn"
+        aria-label="Öppna navigering"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((v) => !v)}
+        className="w-10 h-10 md:w-11 md:h-11 rounded-full flex flex-col items-center justify-center gap-[5px] transition-all duration-200 select-none focus:outline-none"
+        style={{
+          background: isOpen ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.05)",
+          border: "1px solid rgba(0,0,0,0.09)",
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(0,0,0,0.10)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = isOpen ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.05)"; }}
+      >
+        <motion.span
+          animate={{ rotate: isOpen ? 45 : 0, y: isOpen ? 7 : 0 }}
+          transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+          className="block h-[1.5px] w-5 rounded-full bg-black origin-center"
+        />
+        <motion.span
+          animate={{ opacity: isOpen ? 0 : 1, scaleX: isOpen ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
+          className="block h-[1.5px] w-5 rounded-full bg-black"
+        />
+        <motion.span
+          animate={{ rotate: isOpen ? -45 : 0, y: isOpen ? -7 : 0 }}
+          transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+          className="block h-[1.5px] w-5 rounded-full bg-black origin-center"
+        />
+      </button>
+
+      {/* Dropdown sheet */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute right-0 top-[calc(100%+10px)] z-[200] min-w-[220px] py-2"
+            style={{
+              background: "rgba(244,240,234,0.97)",
+              borderRadius: "1.25rem",
+              border: "1px solid rgba(0,0,0,0.08)",
+              boxShadow: "0 20px 60px -10px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.08)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+            }}
+          >
+            {navLinks.map((link, i) => (
+              <motion.div
+                key={link.href}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.06 + 0.08, duration: 0.22 }}
+              >
+                <Link
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-5 py-3.5 text-sm font-semibold tracking-wide transition-all duration-150 rounded-xl mx-1 group/link"
+                  style={{ color: "rgba(0,0,0,0.75)", letterSpacing: "0.04em" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.05)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = ""; }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-150"
+                    style={{ background: "rgba(0,0,0,0.25)" }}
+                  />
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PAGE COMPONENT
+═══════════════════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════════
+   CONTACT FORM — Controlled, submits JSON to /api/send
+═══════════════════════════════════════════════════════════════════════════════ */
+function ContactForm() {
+  const [fields, setFields] = useState({ name: "", email: "", phone: "", adress: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      const data = await res.json();
+      setStatus(data.ok ? "success" : "error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const inputStyle: React.CSSProperties = {
+    borderBottom: "1px solid rgba(255,255,255,0.18)",
+    fontFamily: "var(--font-inter, sans-serif)",
+  };
+
+  if (status === "success") {
+    return (
+      <div className="flex flex-col items-start gap-6 py-10">
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center"
+          style={{ background: "rgba(255,255,255,0.10)" }}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-serif font-bold text-white text-3xl leading-none mb-3">Tack!</p>
+          <p className="text-lg" style={{ color: "rgba(255,255,255,0.6)" }}>
+            Vi återkopplar inom 24 timmar.
+          </p>
+        </div>
+        <button
+          onClick={() => { setStatus("idle"); setFields({ name: "", email: "", phone: "", adress: "", message: "" }); }}
+          className="text-sm font-semibold uppercase tracking-widest transition-opacity duration-200 hover:opacity-60"
+          style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.14em" }}
+        >
+          Skicka ny förfrågan
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+      {[
+        { type: "text", name: "name", placeholder: "Ditt Namn", id: "form-name" },
+        { type: "email", name: "email", placeholder: "E-postadress", id: "form-email" },
+        { type: "tel", name: "phone", placeholder: "Telefonnummer", id: "form-phone" },
+        { type: "text", name: "adress", placeholder: "Adress", id: "form-adress" },
+      ].map((field) => (
+        <div key={field.id} className="relative group">
+          <input
+            id={field.id}
+            type={field.type}
+            name={field.name}
+            value={(fields as Record<string, string>)[field.name]}
+            onChange={handleChange}
+            placeholder={field.placeholder}
+            required={field.name !== "adress"}
+            className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors peer"
+            style={inputStyle}
+            onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
+            onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
+          />
+        </div>
+      ))}
+
+      {/* Textarea */}
+      <div className="relative">
+        <textarea
+          id="form-project"
+          name="message"
+          value={fields.message}
+          onChange={handleChange}
+          placeholder="Berätta om ditt projekt..."
+          rows={3}
+          className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors resize-none"
+          style={inputStyle}
+          onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
+          onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
+        />
+      </div>
+
+      {/* Error message */}
+      {status === "error" && (
+        <p className="text-sm" style={{ color: "rgba(255,120,120,0.9)" }}>
+          Något gick fel. Försök igen eller ring oss på 073-527 19 57.
+        </p>
+      )}
+
+      {/* Submit CTA */}
+      <div className="flex flex-col gap-5 mt-4">
+        <motion.button
+          type="submit"
+          id="form-submit"
+          disabled={status === "sending"}
+          whileHover={status !== "sending" ? { scale: 1.03, y: -2 } : {}}
+          whileTap={status !== "sending" ? { scale: 0.97 } : {}}
+          className="w-full rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] py-6 transition-all duration-300"
+          style={{
+            boxShadow: "0 20px 60px -10px rgba(255,255,255,0.25), 0 0 0 1px rgba(255,255,255,0.08)",
+            opacity: status === "sending" ? 0.6 : 1,
+            cursor: status === "sending" ? "not-allowed" : "pointer",
+          }}
+        >
+          {status === "sending" ? "SKICKAR..." : "BOKA OFFERT / FÖRFRÅGAN"}
+        </motion.button>
+        <p
+          className="text-center text-xs tracking-wide"
+          style={{ color: "rgba(255,255,255,0.3)" }}
+        >
+          * Alla offerter är kostnadsfria — 100% nöjd-kund-garanti ingår alltid.
+        </p>
+      </div>
+    </form>
   );
 }
 
@@ -636,6 +1035,7 @@ function BentoGallerySection() {
    PAGE COMPONENT
 ═══════════════════════════════════════════════════════════════════════════════ */
 export default function Home() {
+
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
@@ -645,9 +1045,9 @@ export default function Home() {
       className="min-h-screen overflow-x-hidden"
       style={{ background: CREAM, fontFamily: "var(--font-inter, sans-serif)" }}
     >
-      {/* ──────────────────────────────────────────────────────────────────────
+      {/* ----------------------------------------------------------------------
           1. THE HOVERING NAV
-      ────────────────────────────────────────────────────────────────────── */}
+      ---------------------------------------------------------------------- */}
       <motion.nav
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -664,6 +1064,7 @@ export default function Home() {
           className="max-w-screen-xl mx-auto px-3 md:px-16 h-16 md:h-20 flex items-center justify-between gap-2"
         >
           {/* Logo */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/"
             onClick={(e) => {
@@ -676,18 +1077,18 @@ export default function Home() {
             <img
               src="/logga.png"
               alt="Sjöstedts Måleri"
-              className="h-9 sm:h-12 md:h-20 w-auto object-contain select-none shrink"
+              className="h-9 sm:h-12 md:h-14 w-auto object-contain select-none shrink"
             />
           </a>
 
-          {/* CTA pill + phone — both visible on mobile, compact */}
-          <div className="flex items-center gap-1 md:gap-4 shrink-0">
+          {/* Right side: CTA pill + phone + hamburger */}
+          <div className="flex items-center gap-1 md:gap-3 shrink-0">
             {/* Phone — Concave neumorphic button */}
             <a
               href="tel:0735271957"
               id="nav-phone-btn"
               aria-label="Ring 073-527 19 57"
-              className="flex items-center gap-1 md:gap-1.5 rounded-full px-2 py-1 md:px-5 md:py-2.5 text-[10px] md:text-xs font-semibold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none"
+              className="flex items-center gap-1 md:gap-1.5 rounded-full px-2 py-1 md:px-4 md:py-2.5 text-[10px] md:text-xs font-semibold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none"
               style={{
                 letterSpacing: "0.12em",
                 boxShadow: "inset 0 2px 6px rgba(0,0,0,0.10), inset 0 1px 2px rgba(0,0,0,0.06)",
@@ -708,7 +1109,7 @@ export default function Home() {
               <span className="sm:hidden">Ring</span>
             </a>
 
-            {/* Boka Offert — convex / popping-out primary */}
+            {/* Boka Offert / Förfrågan — convex / popping-out primary */}
             <motion.a
               href="#offert"
               initial={{ opacity: 0, scale: 0.85 }}
@@ -716,28 +1117,34 @@ export default function Home() {
               transition={{ duration: 1, ease, delay: 0.3 }}
               whileHover={{ scale: 1.06, boxShadow: "0 20px 48px rgba(0,0,0,0.36), 0 4px 12px rgba(0,0,0,0.22)" }}
               whileTap={{ scale: 0.96 }}
-              className="rounded-full bg-black text-white py-1 px-2.5 md:px-7 md:py-3 text-[10px] md:text-xs font-semibold uppercase cursor-pointer select-none transition-all duration-300 flex-shrink-0"
+              className="rounded-full bg-black text-white py-2 px-3 md:px-5 md:py-3 text-[9px] md:text-xs font-semibold uppercase cursor-pointer select-none transition-all duration-300 flex-shrink-0 flex items-center"
               style={{
-                letterSpacing: "0.18em",
+                letterSpacing: "0.14em",
                 boxShadow: "0 8px 28px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12)",
                 border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              Boka Offert
+              <span className="hidden sm:inline">BOKA OFFERT / FÖRFRÅGAN</span>
+              <span className="sm:hidden">OFFERT</span>
             </motion.a>
+
+            {/* Hamburger menu — always visible on both mobile and desktop, far right */}
+            <HamburgerMenu />
           </div>
         </div>
       </motion.nav>
 
       <main>
-        {/* ────────────────────────────────────────────────────────────────────
+        {/* --------------------------------------------------------------------
             2. HERO — Clean image frame, grounded headline
-        ──────────────────────────────────────────────────────────────────── */}
+        -------------------------------------------------------------------- */}
         <section
           ref={heroRef}
           className="relative flex items-center pt-16 md:pt-20"
           style={{ minHeight: "100svh", contain: "layout" }}
         >
+
+
           {/* Warm radial wash */}
           <motion.div
             style={{ y: heroBgY }}
@@ -747,35 +1154,28 @@ export default function Home() {
             <div
               className="absolute inset-0"
               style={{
-                background: `radial-gradient(ellipse 65% 70% at 80% 50%, rgba(255,255,255,0.7) 0%, transparent 70%)`,
+                background: `radial-gradient(ellipse 65% 70% at 80% 50%, rgba(255,255,255,0.18) 0%, transparent 70%)`,
               }}
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full pt-2 pb-4 md:pt-8 md:pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full pt-2 pb-4 md:pt-8 md:pb-10">
             {/* LEFT — Grounded Headline */}
             <motion.div
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.4, ease }}
-              className="flex flex-col justify-center z-10 min-w-0"
+              className="flex flex-col justify-center z-10 min-w-0 lg:col-span-7 lg:pr-10"
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease, delay: 0.1 }}
-                className="font-serif font-bold leading-none tracking-tight mb-3 md:mb-5 text-4xl md:text-6xl lg:text-[clamp(2.6rem,5.5vw,6.5rem)]"
+                className="font-serif font-bold leading-none tracking-tight mb-3 md:mb-5 text-4xl md:text-6xl lg:text-[4.5rem]"
               >
                 Professionellt
                 <br />
-                <span style={{ opacity: 0.82 }}>måleri i</span>
-                <br />
-                <span
-                  className="font-serif font-bold text-2xl md:text-[clamp(1.9rem,4.2vw,4.2rem)]"
-                  style={{ opacity: 0.48 }}
-                >
-                  Ljungby.
-                </span>
+                <span className="whitespace-nowrap">måleri i Ljungby.</span>
               </motion.h1>
 
 
@@ -787,7 +1187,7 @@ export default function Home() {
                 transition={{ duration: 1, ease, delay: 0.4 }}
                 className="flex flex-row flex-wrap items-center gap-2 md:gap-3"
               >
-                {/* BOKA OFFERT — convex, pops OUT */}
+                {/* BOKA OFFERT / FÖRFRÅGAN — convex, pops OUT */}
                 <a
                   href="#offert"
                   className="rounded-full bg-black text-white px-4 py-2 text-sm md:text-sm md:px-9 md:py-4 font-bold uppercase transition-all duration-300 hover:-translate-y-1 active:scale-95"
@@ -805,7 +1205,7 @@ export default function Home() {
                       "0 12px 32px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.1) inset";
                   }}
                 >
-                  Boka Offert
+                  BOKA OFFERT / FÖRFRÅGAN
                 </a>
 
                 {/* Phone — Concave neumorphic button */}
@@ -879,7 +1279,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.5, ease, delay: 0.1 }}
-              className="relative w-full min-w-0 aspect-[4/5] md:aspect-auto md:h-full md:min-h-[600px]"
+              className="relative w-full min-w-0 aspect-[4/5] md:aspect-auto md:h-full md:min-h-[600px] lg:col-span-5 z-10"
             >
               <div
                 className="absolute inset-0 rounded-[3rem] overflow-hidden"
@@ -899,9 +1299,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ────────────────────────────────────────────────────────────────────
-            TRUST STRIP
-        ──────────────────────────────────────────────────────────────────── */}
+        {/* --------------------------------------------------------------------
+            TRUST STRIP — 2 Cards (Erfarenhet & Trygghet)
+        -------------------------------------------------------------------- */}
         <section
           className="w-full"
           style={{
@@ -911,11 +1311,10 @@ export default function Home() {
           }}
         >
           <div className="max-w-screen-xl mx-auto px-6 md:px-16">
-            <div className="grid grid-cols-1 md:grid-cols-3">
+            <div className="grid grid-cols-1 md:grid-cols-2">
               {[
-                { num: "01", heading: "Erfarenhet", body: "Handplockade målare med gesällbrev och mästarexamen. Trygghet du kan lita på." },
-                { num: "02", heading: "Hantverksskicklighet", body: "Slutbesiktning och garanti ingår på varje uppdrag — utan kompromisser." },
-                { num: "03", heading: "Trygghet", body: "Bindande offerter utan dolda kostnader. Tydlighet och ärlighet i varje steg." },
+                { num: "01", heading: "ERFARENHET", body: "Handplockade målare med hög kompetens." },
+                { num: "02", heading: "TRYGGHET", body: "Bindande offerter utan dolda kostnader. Tydlighet och ärlighet i varje steg." },
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -923,9 +1322,9 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={VP}
                   transition={{ duration: 0.9, ease, delay: idx * 0.12 }}
-                  className="py-12 px-6 md:px-10 flex flex-col gap-4"
+                  className="py-12 px-6 md:px-14 flex flex-col gap-4"
                   style={{
-                    borderRight: idx < 2 ? "1px solid rgba(0,0,0,0.07)" : undefined,
+                    borderRight: idx < 1 ? "1px solid rgba(0,0,0,0.07)" : undefined,
                   }}
                 >
                   <span className="text-xs tracking-[0.24em] font-mono" style={{ color: "rgba(0,0,0,0.35)" }}>
@@ -942,14 +1341,14 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
-            BENTO BOX GALLERY — Senaste Transformationer
+            CATEGORY GALLERY — Invändigt, Utvändigt, Tvätt / Algbehandlingar
         ═══════════════════════════════════════════════════════════════════ */}
-        <BentoGallerySection />
+        <CategoryGallerySection />
 
 
-        {/* ────────────────────────────────────────────────────────────────────
+        {/* --------------------------------------------------------------------
             5. THE VAULT — Blackout Conversion Form
-        ──────────────────────────────────────────────────────────────────── */}
+        -------------------------------------------------------------------- */}
         <section
           id="offert"
           className="pt-4 pb-16 px-4 md:px-8"
@@ -1012,40 +1411,29 @@ export default function Home() {
                   <span style={{ opacity: 0.72 }}>förändring?</span>
                 </motion.h2>
 
-                <motion.p
-                  initial={{ opacity: 0, x: -40 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={VP}
-                  transition={{ duration: 1, ease, delay: 0.2 }}
-                  className="font-sans font-normal text-lg leading-relaxed mb-12"
-                  style={{ color: "rgba(255,255,255,0.6)", maxWidth: "380px" }}
-                >
-                  Jonas återkommer personligen med en bindande fastprisoffert inom 24 timmar. Trygghet och ärlighet — inga dolda avgifter.
-                </motion.p>
-
-                {/* Trust badges */}
+                {/* Updated checklist — larger text, 3 new points */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={VP}
                   transition={{ duration: 1, ease, delay: 0.35 }}
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-5"
                 >
                   {[
-                    "Bindande fastprisoffert",
-                    "Certifierat målarmästeri",
-                    "100% nöjd-kund-garanti",
+                    "Återkoppling inom 24 timmar",
+                    "Kostnadsfri förbesiktning och personligt hembesök",
+                    "100% Nöjd kund-garanti",
                   ].map((badge, i) => (
-                    <div key={i} className="flex items-center gap-3">
+                    <div key={i} className="flex items-center gap-4">
                       <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                        className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                         style={{ background: "rgba(255,255,255,0.12)" }}
                       >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <span className="text-sm tracking-wide font-medium" style={{ color: "rgba(255,255,255,0.55)" }}>
+                      <span className="text-lg font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.82)" }}>
                         {badge}
                       </span>
                     </div>
@@ -1060,85 +1448,16 @@ export default function Home() {
                 viewport={VP}
                 transition={{ duration: 1.1, ease, delay: 0.15 }}
               >
-                <form
-                  action="https://formsubmit.co/sjostedtsmaleri@gmail.com"
-                  method="POST"
-                  className="flex flex-col gap-10"
-                  onSubmit={(e) => { new Audio('https://www.soundjay.com/buttons/sounds/button-30.mp3').play(); }}
-                >
-                  {/* FormSubmit hidden config inputs */}
-                  <input type="hidden" name="_captcha" value="false" />
-                  <input type="hidden" name="_subject" value="Ny Offertförfrågan från Hemsidan!" />
-
-                  {[
-                    { type: "text", name: "name", placeholder: "Ditt Namn", id: "form-name" },
-                    { type: "email", name: "email", placeholder: "E-postadress", id: "form-email" },
-                    { type: "tel", name: "phone", placeholder: "Telefonnummer", id: "form-phone" },
-                  ].map((field) => (
-                    <div key={field.id} className="relative group">
-                      <input
-                        id={field.id}
-                        type={field.type}
-                        name={field.name}
-                        placeholder={field.placeholder}
-                        className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors peer"
-                        style={{
-                          borderBottom: "1px solid rgba(255,255,255,0.18)",
-                          fontFamily: "var(--font-inter, sans-serif)",
-                        }}
-                        onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
-                        onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
-                      />
-                    </div>
-                  ))}
-
-                  {/* Textarea */}
-                  <div className="relative">
-                    <textarea
-                      id="form-project"
-                      name="message"
-                      placeholder="Berätta om ditt projekt..."
-                      rows={3}
-                      className="w-full bg-transparent py-5 text-white text-lg font-normal tracking-wide placeholder-white/30 focus:outline-none transition-colors resize-none"
-                      style={{
-                        borderBottom: "1px solid rgba(255,255,255,0.18)",
-                        fontFamily: "var(--font-inter, sans-serif)",
-                      }}
-                      onFocus={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.7)")}
-                      onBlur={(e) => (e.currentTarget.style.borderBottomColor = "rgba(255,255,255,0.18)")}
-                    />
-                  </div>
-
-                  {/* Submit CTA */}
-                  <div className="flex flex-col gap-5 mt-4">
-                    <motion.button
-                      type="submit"
-                      id="form-submit"
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="w-full rounded-full bg-white text-black font-black text-sm uppercase tracking-[0.2em] py-6 transition-all duration-300"
-                      style={{
-                        boxShadow: "0 20px 60px -10px rgba(255,255,255,0.25), 0 0 0 1px rgba(255,255,255,0.08)",
-                      }}
-                    >
-                      Skicka Förfrågan
-                    </motion.button>
-                    <p
-                      className="text-center text-xs tracking-wide"
-                      style={{ color: "rgba(255,255,255,0.3)" }}
-                    >
-                      * Alla offerter är kostnadsfria och bindande — 100% nöjd-kund-garanti ingår alltid.
-                    </p>
-                  </div>
-                </form>
+                <ContactForm />
               </motion.div>
+
             </div>
           </motion.div>
         </section>
 
-        {/* ────────────────────────────────────────────────────────────────────
+        {/* --------------------------------------------------------------------
             FOOTER
-        ──────────────────────────────────────────────────────────────────── */}
+        -------------------------------------------------------------------- */}
         <footer
           className="w-full pt-16 pb-10 px-6 md:px-16"
           style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}
@@ -1153,9 +1472,7 @@ export default function Home() {
                   alt="Sjöstedts Måleri"
                   className="h-12 w-auto object-contain opacity-70"
                 />
-                <p className="text-xs tracking-wide font-sans font-semibold" style={{ color: "rgba(0,0,0,0.3)" }}>
-                  Certifierat Målarmästeri
-                </p>
+
               </div>
 
               {/* Telefon */}
@@ -1195,15 +1512,66 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom row: copyright */}
-            <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Bottom row: social icons + copyright */}
+            <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <p
-                className="text-xs tracking-[0.18em] font-sans font-medium text-center"
+                className="text-xs tracking-[0.18em] font-sans font-medium text-center md:text-left"
                 style={{ color: "rgba(0,0,0,0.28)" }}
               >
                 © {new Date().getFullYear()} Sjöstedts Måleri AB · Hantverksskicklighet i varje detalj.
               </p>
-              <p className="text-xs font-mono" style={{ color: "rgba(0,0,0,0.2)" }}>Ljungby · Sverige</p>
+
+              {/* Social Media Icons — larger, real URLs */}
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://www.facebook.com/profile.php?id=100066792379905"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  id="footer-facebook-btn"
+                  aria-label="Besök vår Facebook-sida"
+                  className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200"
+                  style={{
+                    background: "rgba(0,0,0,0.06)",
+                    border: "1px solid rgba(0,0,0,0.09)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.12)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-3px)";
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 10px 24px rgba(0,0,0,0.14)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.06)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "";
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "";
+                  }}
+                >
+                  <FacebookIcon size={26} style={{ color: "rgba(0,0,0,0.65)" }} />
+                </a>
+                <a
+                  href="https://www.instagram.com/sjostedtsmaleri/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  id="footer-instagram-btn"
+                  aria-label="Besök vår Instagram-sida"
+                  className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200"
+                  style={{
+                    background: "rgba(0,0,0,0.06)",
+                    border: "1px solid rgba(0,0,0,0.09)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.12)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-3px)";
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 10px 24px rgba(0,0,0,0.14)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.06)";
+                    (e.currentTarget as HTMLAnchorElement).style.transform = "";
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "";
+                  }}
+                >
+                  <InstagramIcon size={26} style={{ color: "rgba(0,0,0,0.65)" }} />
+                </a>
+              </div>
             </div>
           </div>
         </footer>

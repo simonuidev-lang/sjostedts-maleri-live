@@ -292,7 +292,7 @@ export function LiquidPaintButton({
       if (!ctx) throw new Error("no ctx");
       gl = ctx;
     } catch {
-      setFailed(true);
+      setTimeout(() => setFailed(true), 0);
       return;
     }
 
@@ -325,7 +325,7 @@ export function LiquidPaintButton({
         display:   makeProgram(gl, VERT, DISPLAY_FRAG),
       };
     } catch {
-      setFailed(true);
+      setTimeout(() => setFailed(true), 0);
       return;
     }
 
@@ -354,7 +354,7 @@ export function LiquidPaintButton({
       divergence = makeFBO(gl, simW, simH, gl.R16F, gl.RED, gl.HALF_FLOAT, gl.NEAREST);
       curlFBO    = makeFBO(gl, simW, simH, gl.R16F, gl.RED, gl.HALF_FLOAT, gl.NEAREST);
     } catch {
-      setFailed(true);
+      setTimeout(() => setFailed(true), 0);
       return;
     }
 
