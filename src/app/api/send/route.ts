@@ -109,9 +109,9 @@ export async function POST(request: NextRequest) {
     });
 
     await transporter.sendMail({
-      from: `"Sjöstedts Måleri" <${process.env.SMTP_USER || process.env.EMAIL_USER}>`,
+      from: "Sjöstedts Måleri <onboarding@resend.dev>",
       to: "sjostedtsmaleri@gmail.com",
-      replyTo: email || undefined,
+      replyTo: email,
       subject: `🎨 Ny offertförfrågan från ${name || "okänd"} — ${timestamp}`,
       html,
     });
