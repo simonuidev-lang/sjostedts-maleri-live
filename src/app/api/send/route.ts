@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 
     await transporter.sendMail({
       from: "Sjöstedts Måleri <onboarding@resend.dev>",
-      to: "sjostedtsmaleri@gmail.com",
+      to: "krigaren109@gmail.com",
       replyTo: email,
       subject: `🎨 Ny offertförfrågan från ${name || "okänd"} — ${timestamp}`,
       html,
