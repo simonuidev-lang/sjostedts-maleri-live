@@ -365,5 +365,20 @@ export async function generateMetadata({
   return {
     title: `${category.title} — Sjöstedts Måleri`,
     description: category.subtitle,
+    openGraph: {
+      title: `${category.title} — Sjöstedts Måleri`,
+      description: category.subtitle,
+      siteName: "Sjöstedts Måleri",
+      locale: "sv_SE",
+      type: "website",
+      images: [
+        {
+          url: "/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Sjöstedts Måleri",
+        },
+      ],
+    },
   };
 }

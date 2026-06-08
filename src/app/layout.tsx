@@ -14,8 +14,28 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Sjöstedts Måleri",
-  description: "Noggrannhet i varje penseldrag. Luxury painting contractor.",
+  metadataBase: new URL(
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000"
+  ),
+  title: "Sjöstedts Måleri — Premium måleritjänster med total trygghet",
+  description: "Professionellt invändigt och utvändigt måleri samt tvätt och algbehandlingar. Få en kostnadsfri offert utan dolda kostnader.",
+  openGraph: {
+    title: "Sjöstedts Måleri — Premium måleritjänster med total trygghet",
+    description: "Professionellt invändigt och utvändigt måleri samt tvätt och algbehandlingar. Få en kostnadsfri offert utan dolda kostnader.",
+    siteName: "Sjöstedts Måleri",
+    locale: "sv_SE",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Sjöstedts Måleri",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

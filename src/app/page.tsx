@@ -917,15 +917,22 @@ function ContactForm() {
     e.preventDefault();
     setStatus("submitting");
     try {
-      const response = await fetch("/api/send", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify(fields),
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          subject: `Ny offertförfrågan från ${fields.name || "okänd"}`,
+          from_name: "Sjöstedts Måleri Hemsida",
+          ...fields,
+        }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+      if (response.ok && data.success) {
         setStatus("success");
         setFields({ name: "", email: "", phone: "", adress: "", message: "" });
       } else {
