@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     /* ── Send email using Resend client directly ── */
     await resend.emails.send({
       from: "Sjöstedts Måleri <onboarding@resend.dev>",
-      to: "krigaren109@gmail.com",
+      to: "sjostedtsmaleri@gmail.com",
       replyTo: email || undefined,
       subject: `🎨 Ny offertförfrågan från ${name || "okänd"} — ${timestamp}`,
       html,
