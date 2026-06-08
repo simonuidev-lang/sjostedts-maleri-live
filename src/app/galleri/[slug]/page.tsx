@@ -294,26 +294,7 @@ export default async function GalleriPage({
                     objectFit: "cover",
                   }}
                 />
-                {/* Index chip */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "14px",
-                    right: "14px",
-                    padding: "4px 10px",
-                    borderRadius: "9999px",
-                    background: "rgba(0,0,0,0.5)",
-                    backdropFilter: "blur(8px)",
-                    WebkitBackdropFilter: "blur(8px)",
-                    fontSize: "9px",
-                    fontWeight: 700,
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.9)",
-                  }}
-                >
-                  {String(idx + 1).padStart(2, "0")}
-                </div>
+                {/* Index chip removed */}
               </div>
             ))}
           </div>

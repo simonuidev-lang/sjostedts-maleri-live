@@ -635,6 +635,19 @@ function CategoryImagePair({
   );
 }
 
+const trustItems = [
+  {
+    id: "erfarenhet",
+    heading: "ERFARENHET",
+    body: "Handplockade målare med hög kompetens.",
+  },
+  {
+    id: "trygghet",
+    heading: "TRYGGHET",
+    body: "Bindande offerter utan dolda kostnader. Tydlighet och ärlighet i varje steg.",
+  },
+];
+
 /* ══════════════════════════════════════════════════════════════════════════════
    3-CATEGORY GALLERY SECTION
 ═══════════════════════════════════════════════════════════════════════════════ */
@@ -703,12 +716,6 @@ function CategoryGallerySection() {
           >
             {/* Category sub-heading — clickable link to sub-gallery */}
             <div className="flex items-center gap-4 mb-8">
-              <span
-                className="text-[10px] tracking-[0.26em] font-mono font-semibold uppercase px-3 py-1.5 rounded-full flex-shrink-0"
-                style={{ background: "rgba(0,0,0,0.06)", color: "rgba(0,0,0,0.45)" }}
-              >
-                {String(catIdx + 3).padStart(2, "0")}
-              </span>
               <Link href={cat.href} className="group/heading flex items-center gap-3 no-underline"
                 style={{ color: "inherit" }}
               >
@@ -1345,12 +1352,9 @@ export default function Home() {
         >
           <div className="max-w-screen-xl mx-auto px-6 md:px-16">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              {[
-                { num: "01", heading: "ERFARENHET", body: "Handplockade målare med hög kompetens." },
-                { num: "02", heading: "TRYGGHET", body: "Bindande offerter utan dolda kostnader. Tydlighet och ärlighet i varje steg." },
-              ].map((item, idx) => (
+              {trustItems.map((item, idx) => (
                 <motion.div
-                  key={idx}
+                  key={item.id}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={VP}
@@ -1360,9 +1364,6 @@ export default function Home() {
                     borderRight: idx < 1 ? "1px solid rgba(0,0,0,0.07)" : undefined,
                   }}
                 >
-                  <span className="text-xs tracking-[0.24em] font-mono" style={{ color: "rgba(0,0,0,0.35)" }}>
-                    {item.num}
-                  </span>
                   <h3 className="text-sm tracking-[0.14em] font-serif font-bold uppercase">{item.heading}</h3>
                   <p className="font-sans font-medium text-lg" style={{ color: "rgba(0,0,0,0.62)", lineHeight: 1.65 }}>
                     {item.body}
