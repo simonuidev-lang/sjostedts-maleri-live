@@ -707,7 +707,7 @@ function CategoryGallerySection() {
                 className="text-[10px] tracking-[0.26em] font-mono font-semibold uppercase px-3 py-1.5 rounded-full flex-shrink-0"
                 style={{ background: "rgba(0,0,0,0.06)", color: "rgba(0,0,0,0.45)" }}
               >
-                {String(catIdx + 1).padStart(2, "0")}
+                {String(catIdx + 3).padStart(2, "0")}
               </span>
               <Link href={cat.href} className="group/heading flex items-center gap-3 no-underline"
                 style={{ color: "inherit" }}
