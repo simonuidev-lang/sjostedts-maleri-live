@@ -1187,91 +1187,76 @@ export default function Home() {
         -------------------------------------------------------------------- */}
         <section
           ref={heroRef}
-          className="relative flex items-center pt-16 md:pt-20"
+          className="relative flex items-center pt-16 md:pt-20 overflow-hidden"
           style={{ minHeight: "100svh", contain: "layout" }}
         >
-
-
-          {/* Warm radial wash */}
+          {/* Full-bleed Background Video */}
           <motion.div
             style={{ y: heroBgY }}
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
             aria-hidden="true"
           >
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `radial-gradient(ellipse 65% 70% at 80% 50%, rgba(255,255,255,0.18) 0%, transparent 70%)`,
-              }}
-            />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover scale-105"
+            >
+              <source src="/bakvideo.mp4" type="video/mp4" />
+            </video>
+            {/* Dark overlay over video so text on top remains readable and crisp */}
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full pt-2 pb-4 md:pt-8 md:pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-12 lg:gap-16 items-center max-w-7xl mx-auto px-6 md:px-12 w-full py-10 md:py-16 relative z-10">
             {/* LEFT — Grounded Headline */}
             <motion.div
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.4, ease }}
-              className="flex flex-col justify-center z-10 min-w-0 lg:col-span-7 lg:pr-10"
+              className="flex flex-col justify-center space-y-6 md:space-y-7 z-10 min-w-0 lg:col-span-7 lg:pr-10"
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease, delay: 0.1 }}
-                className="font-serif font-bold leading-none tracking-tight mb-3 md:mb-5 text-4xl md:text-6xl lg:text-[4.5rem]"
+                className="font-serif font-bold leading-none tracking-tight text-4xl md:text-6xl lg:text-[4.5rem] text-white drop-shadow-md"
               >
                 Professionellt
                 <br />
-                <span className="whitespace-nowrap">måleri i Ljungby.</span>
+                <span className="whitespace-nowrap text-white">måleri i Ljungby.</span>
               </motion.h1>
-
-
 
               {/* Buttons */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, ease, delay: 0.4 }}
-                className="flex flex-row flex-wrap items-center gap-2 md:gap-3"
+                className="flex flex-row flex-wrap items-center gap-3.5 md:gap-4"
               >
-                {/* BOKA OFFERT / FÖRFRÅGAN — convex, pops OUT */}
+                {/* BOKA OFFERT / FÖRFRÅGAN — crisp high-contrast primary button */}
                 <a
                   href="#offert"
-                  className="rounded-full bg-black text-white px-4 py-2 text-sm md:text-sm md:px-9 md:py-4 font-bold uppercase transition-all duration-300 hover:-translate-y-1 active:scale-95"
+                  className="rounded-full bg-white text-stone-900 px-5 py-3 md:px-9 md:py-4 text-xs sm:text-sm font-bold uppercase transition-all duration-300 hover:-translate-y-1 hover:bg-stone-100 active:scale-95 text-center"
                   style={{
-                    letterSpacing: "0.16em",
-                    boxShadow: "0 12px 32px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.1) inset",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      "0 20px 56px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.1) inset";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      "0 12px 32px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.1) inset";
+                    letterSpacing: "0.14em",
+                    boxShadow: "0 12px 32px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3)",
                   }}
                 >
                   BOKA OFFERT / FÖRFRÅGAN
                 </a>
 
-                {/* Phone — Concave neumorphic button */}
+                {/* Phone — Concave neumorphic / glassmorphic button */}
                 <a
                   href="tel:0735271957"
                   id="hero-phone-btn"
                   aria-label="Ring 073-527 19 57"
-                  className="rounded-full px-4 py-2 text-sm md:text-sm md:px-9 md:py-4 font-bold uppercase text-gray-800 bg-gray-100 border border-gray-200 transition-all duration-200 select-none active:scale-95"
+                  className="rounded-full px-5 py-3 md:px-9 md:py-4 text-xs sm:text-sm font-bold uppercase text-white bg-white/15 backdrop-blur-md border border-white/30 transition-all duration-200 select-none active:scale-95 hover:bg-white/25 text-center"
                   style={{
-                    letterSpacing: "0.16em",
-                    boxShadow: "inset 0 2px 8px rgba(0,0,0,0.10), inset 0 1px 3px rgba(0,0,0,0.07)",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "inset 0 4px 10px rgba(0,0,0,0.15), inset 0 2px 5px rgba(0,0,0,0.10)";
-                    (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#e5e7eb";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "inset 0 2px 8px rgba(0,0,0,0.10), inset 0 1px 3px rgba(0,0,0,0.07)";
-                    (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "";
+                    letterSpacing: "0.14em",
+                    boxShadow: "inset 0 1px 2px rgba(255,255,255,0.2), 0 8px 24px rgba(0,0,0,0.3)",
                   }}
                 >
                   073-527 19 57
@@ -1283,63 +1268,63 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease, delay: 0.65 }}
-                className="flex flex-wrap items-center gap-3 mt-4 md:mt-8"
+                className="flex flex-wrap items-center gap-x-3.5 gap-y-3 pt-1 md:pt-2"
               >
                 {/* 5-star row */}
-                <span className="text-xs text-stone-500 flex items-center gap-1.5">
+                <span className="text-xs text-stone-200 flex items-center gap-1.5">
                   <span className="flex items-center gap-0.5" aria-label="5 av 5 stjärnor">
                     {[...Array(5)].map((_, i) => (
-                      <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="text-stone-600" aria-hidden="true">
+                      <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="text-amber-400" aria-hidden="true">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                       </svg>
                     ))}
                   </span>
-                  <span className="font-medium">5/5 i Kundnöjdhet</span>
+                  <span className="font-medium text-stone-200">5/5 i Kundnöjdhet</span>
                 </span>
 
-                <span className="text-stone-300 text-sm select-none" aria-hidden="true">·</span>
+                <span className="text-stone-400 text-sm select-none" aria-hidden="true">·</span>
 
                 {/* Map pin */}
-                <span className="text-xs text-stone-500 flex items-center gap-1.5">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-600" aria-hidden="true">
+                <span className="text-xs text-stone-200 flex items-center gap-1.5">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-300" aria-hidden="true">
                     <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span className="font-medium">Lokala i Ljungby</span>
+                  <span className="font-medium text-stone-200">Lokala i Ljungby</span>
                 </span>
 
-                <span className="text-stone-300 text-sm select-none" aria-hidden="true">·</span>
+                <span className="text-stone-400 text-sm select-none" aria-hidden="true">·</span>
 
                 {/* Shield / no hidden fees */}
-                <span className="text-xs text-stone-500 flex items-center gap-1.5">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-600" aria-hidden="true">
+                <span className="text-xs text-stone-200 flex items-center gap-1.5">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-300" aria-hidden="true">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     <polyline points="9 12 11 14 15 10" />
                   </svg>
-                  <span className="font-medium">Inga dolda avgifter</span>
+                  <span className="font-medium text-stone-200">Inga dolda avgifter</span>
                 </span>
               </motion.div>
             </motion.div>
 
-            {/* RIGHT — Massive clean image frame */}
+            {/* RIGHT — Massive clean image frame featuring Team Photo */}
             <motion.div
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.5, ease, delay: 0.1 }}
-              className="relative w-full min-w-0 aspect-[4/5] md:aspect-auto md:h-full md:min-h-[600px] lg:col-span-5 z-10"
+              className="relative w-full min-w-0 h-[290px] sm:h-[380px] md:h-[440px] lg:h-full lg:min-h-[520px] lg:col-span-5 z-10"
             >
               <div
-                className="absolute inset-0 rounded-[3rem] overflow-hidden"
+                className="absolute inset-0 rounded-[2rem] md:rounded-[3rem] overflow-hidden"
                 style={{
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid rgba(255,255,255,0.2)",
                   boxShadow:
-                    "0 60px 120px -20px rgba(0,0,0,0.22), 0 20px 60px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.9)",
+                    "0 60px 120px -20px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
                 }}
               >
                 <img
-                  src="/jonas.jpg"
-                  alt="Jonas Sjöstedt Måleri"
-                  className="w-full h-full object-cover"
+                  src="/Team.jpg"
+                  alt="Sjöstedts Måleri Team"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
             </motion.div>
